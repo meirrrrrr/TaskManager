@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: /start
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+  celery:
+    build: .
+    command: celery -A TaskManager worker -B -l INFO --concurrency=4
+    volumes:
+      - celery_data:/var/lib/celery/data
+    depends_on:
+      - web
+      - redis
+  redis:
+    image: redis:5-alpine
+
+volumes:
+  postgres_data:
+  celery_data:

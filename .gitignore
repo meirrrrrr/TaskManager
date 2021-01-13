@@ -1,0 +1,6 @@
+.env
+.DS_Store
+.idea/
+api/migrations/
+*.pyc
+db.sqlite3
